@@ -1,5 +1,6 @@
 package cloud;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cloud.entity.Account;
-import cloud.entity.AccountDto;
+import cloud.entity.MailInfo;
+import cloud.entity.Statistic;
 import cloud.repository.AccountRepository;
 
 @RestController
@@ -23,7 +25,14 @@ import cloud.repository.AccountRepository;
 public class AccountController {
 	@Autowired
 	AccountRepository accountRepository;
-
+	
+	@Autowired
+	private StatisticService statisticService;
+	@Autowired
+	private NotificationService notificationService;
+	
+	
+	
 	@GetMapping("/")
 	public List<Account> getAll() {
 		return accountRepository.findAll();
@@ -48,6 +57,15 @@ public class AccountController {
 	@PostMapping("/add")
 	public ResponseEntity<Account> save(@RequestBody Account accDto) {
 		Account newAcc = accountRepository.save(accDto);
+		
+		statisticService.save(new Statistic("Account " + accDto.getFirstName() + " được tạo!", new Date()));
+		MailInfo email = new MailInfo();
+			email.setFrom("tkhn2020@gmail.com");
+			email.setTo("tkhn2020@gmail.com");
+			email.setSubject("Email sent to you");
+			email.setBody("Account " + accDto.getFirstName() + " được tạo!");
+		notificationService.sendNotification(email);
+	//	statisticService.save(new Statistic("dfdfd", new Date()));
 		return ResponseEntity.ok(newAcc);
 	}
 
