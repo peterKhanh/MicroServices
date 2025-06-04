@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,15 +58,15 @@ public class AccountController {
 	@PostMapping("/add")
 	public ResponseEntity<Account> save(@RequestBody Account accDto) {
 		Account newAcc = accountRepository.save(accDto);
-		
+//		Lưu Statistic su dung feign client
 		statisticService.save(new Statistic("Account " + accDto.getFirstName() + " được tạo!", new Date()));
+//		Gui Message su dung feign client
 		MailInfo email = new MailInfo();
 			email.setFrom("tkhn2020@gmail.com");
 			email.setTo("tkhn2020@gmail.com");
-			email.setSubject("Email sent to you");
+			email.setSubject("Email sent to you" + accDto.getFirstName());
 			email.setBody("Account " + accDto.getFirstName() + " được tạo!");
 		notificationService.sendNotification(email);
-	//	statisticService.save(new Statistic("dfdfd", new Date()));
 		return ResponseEntity.ok(newAcc);
 	}
 
@@ -76,7 +77,7 @@ public class AccountController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println(e.getMessage());
 		}
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
