@@ -22,7 +22,6 @@ class NotificationServiceIplm implements NotificationService {
 	public void sendNotification(MailInfo email) {
 		// Fallback
 		System.out.println("Notification service is slow");
-
 	}
 	
 }
