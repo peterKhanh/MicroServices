@@ -35,8 +35,10 @@ public class StatisticController {
 		return ResponseEntity.ok(newStatistic);
 	}
 	@GetMapping("/all")
-	public ResponseEntity<List<Statistic>> getAll() {
-		return ResponseEntity.ok(statisticRepository.findAll());
+	public List<Statistic> getAll() {
+		System.out.println("Stasdfsdfsdfsdfow");
+
+		return statisticRepository.findAll();
 	}
 	
 }

@@ -32,8 +32,6 @@ public class AccountController {
 	@Autowired
 	private NotificationService notificationService;
 	
-	
-	
 	@GetMapping("/")
 	public List<Account> getAll() {
 		return accountRepository.findAll();
@@ -58,15 +56,24 @@ public class AccountController {
 	@PostMapping("/add")
 	public ResponseEntity<Account> save(@RequestBody Account accDto) {
 		Account newAcc = accountRepository.save(accDto);
-//		Lưu Statistic su dung feign client
+
+		//		Lưu Statistic su dung feign client
 		statisticService.save(new Statistic("Account " + accDto.getFirstName() + " được tạo!", new Date()));
-//		Gui Message su dung feign client
-		MailInfo email = new MailInfo();
-			email.setFrom("tkhn2020@gmail.com");
-			email.setTo("tkhn2020@gmail.com");
-			email.setSubject("Email sent to you" + accDto.getFirstName());
-			email.setBody("Account " + accDto.getFirstName() + " được tạo!");
-		notificationService.sendNotification(email);
+		
+		List<Statistic> ls =	statisticService.getAll();
+		ls.forEach((p) -> {
+			System.out.println(p.getMessage());
+		});
+		
+		//		Gui Message su dung feign client
+		MailInfo mailInfo = new MailInfo();
+		mailInfo.setFrom("tkhn2020@gmail.com");
+		mailInfo.setTo("tkhn2020@gmail.com");
+		mailInfo.setSubject("Email sent from SpringBoot to " + accDto.getFirstName());
+		mailInfo.setBody("Account " + accDto.getFirstName() + " được tạo!");
+		notificationService.sendNotification(mailInfo);
+
+		
 		return ResponseEntity.ok(newAcc);
 	}
 

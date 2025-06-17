@@ -11,7 +11,7 @@ import cloud.entity.MailInfo;
 @FeignClient(name="notification-service",  fallback = NotificationServiceIplm.class)
 public interface NotificationService {
 
-    @PostMapping("/send-notification")
+    @PostMapping("/api/send-notification")
     void sendNotification(@RequestBody MailInfo email );
 }
 @Component
